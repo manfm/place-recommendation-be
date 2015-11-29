@@ -10,7 +10,7 @@ class RecommendController < ApplicationController
     render json: recommendation
   end
 
-  def recommend(_lat, _lng)
-    Place.all
+  def recommend(lat, lng)
+    Place.search_close_to(lat, lng)
   end
 end

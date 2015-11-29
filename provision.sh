@@ -1,7 +1,5 @@
 #!/bin/bash --login
 
-cd /vagrant
-
 sudo -E apt-get install -y git
 sudo -E apt-get install -y nodejs
 
