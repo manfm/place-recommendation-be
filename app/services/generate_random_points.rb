@@ -1,5 +1,7 @@
 class GenerateRandomPoints
   def self.call(n, lat, lng)
+    Place.__elasticsearch__.create_index! force: true
+
     Place.delete_all
 
     n.times.map.each_with_index do |_x, index|
@@ -10,6 +12,8 @@ class GenerateRandomPoints
       place.rating = rand(5) + 1
       place.save
     end
+
+    Place.__elasticsearch__.refresh_index!
   end
 
   private

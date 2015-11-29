@@ -2,6 +2,7 @@ require 'elasticsearch/model'
 
 class Place < ActiveRecord::Base
   include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
 
   mapping do
       indexes :location, type: 'geo_point'
@@ -46,5 +47,3 @@ class Place < ActiveRecord::Base
     )
   end
 end
-
-Place.import force: true
