@@ -12,4 +12,6 @@ sudo -E apt-get install -y postgresql postgresql-contrib libpq-dev
 sudo -u postgres createuser -s vagrant
 sudo -u postgres psql -U postgres -d postgres -c "alter user vagrant with password 'pass1';"
 
+wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+
 echo "cd /vagrant" >> /home/vagrant/.bashrc
