@@ -1,7 +1,7 @@
 class RecommendController < ApplicationController
   def close_to
-    lat = params[:lat].to_f
-    lng = params[:lng].to_f
+    lat = params[:latitude].to_f
+    lng = params[:longitude].to_f
 
     GenerateRandomPoints.call 10, lat, lng
 
