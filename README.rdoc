@@ -8,7 +8,7 @@ heroku local web -p 3000
 
 heroku create
 
-heroku config:set ELASTICSEARCH_URL=hhtp://server.com:9200
+heroku config:set ELASTICSEARCH_URL=http://server.com:9200
 
 git push heroku master
 
@@ -16,4 +16,4 @@ heroku run rake db:create
 heroku run rake db:migrate
 
 optional
-heroku run  bundle exec rake environment elasticsearch:import:model CLASS='Place' FORCE=true
+heroku run bundle exec rake environment elasticsearch:import:model CLASS='Place' FORCE=true

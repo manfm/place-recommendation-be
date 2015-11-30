@@ -17,6 +17,7 @@ class Place < ActiveRecord::Base
         .merge(location: "#{latitude.to_f}, #{longitude.to_f}")
     end
 
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
   def self.search_close_to(lat,lng)
     __elasticsearch__.search(
       {
@@ -24,20 +25,26 @@ class Place < ActiveRecord::Base
           "function_score": {
             "functions": [
               {
-                "gauss": {
+                "exp": {
                   "rating": {
                     "origin": "5",
-                    "scale": "1"
+                    "scale": "2",
+                    "offset": "0",
+                    "decay": "0.3"
                   }
                 }
+                # "weight": 2 # does not work at facetflow.com server
               },
               {
                 "gauss": {
                   "location": {
                     "origin": "#{lat}, #{lng}",
-                    "scale": "0.5km"
+                    "scale": "2km",
+                    "offset": "0.3km",
+                    "decay": "0.5"
                   }
                 }
+                # "weight": 1 # does not work at facetflow.com server
               }
             ],
             "score_mode": "multiply"
@@ -47,3 +54,5 @@ class Place < ActiveRecord::Base
     )
   end
 end
+
+Place.import force: true
