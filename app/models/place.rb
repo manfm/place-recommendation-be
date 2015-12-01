@@ -6,21 +6,24 @@ class Place < ActiveRecord::Base
 
   mapping do
       indexes :location, type: 'geo_point'
-      indexes :rating,     type: 'integer'
-      indexes :name,    type: 'string'
+      indexes :rating, type: 'integer'
+      indexes :name, type: 'string'
     end
 
   def as_indexed_json(options)
       self.as_json({
         only: [:id, :name, :rating]
-        })
-        .merge(location: "#{latitude.to_f}, #{longitude.to_f}")
-    end
+      })
+      .merge(location: "#{latitude.to_f}, #{longitude.to_f}")
+  end
 
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
-  def self.search_close_to(lat,lng)
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
+  def self.search_close_to(lat, lng, size)
     __elasticsearch__.search(
       {
+        "from": "0",
+        "size": size,
+        "sort": "_score",
         "query": {
           "function_score": {
             "functions": [
