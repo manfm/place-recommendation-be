@@ -7,12 +7,11 @@ class Place < ActiveRecord::Base
   mapping do
       indexes :location, type: 'geo_point'
       indexes :rating, type: 'integer'
-      indexes :name, type: 'string'
     end
 
   def as_indexed_json(options)
       self.as_json({
-        only: [:id, :name, :rating]
+        only: [:id, :name, :rating, :latitude, :longitude]
       })
       .merge(location: "#{latitude.to_f}, #{longitude.to_f}")
   end
@@ -23,7 +22,22 @@ class Place < ActiveRecord::Base
       {
         "from": "0",
         "size": size,
-        "sort": "_score",
+        "sort": [
+          "_score",
+          {
+            "_geo_distance": { # hack how to compute distance without script_fields
+                "location": "#{lat}, #{lng}",
+                "order": "asc",
+                "unit": "km"
+            }
+          }
+        ],
+        # returns also distance in result - not supported at facetflow.com
+        # "script_fields": {
+        #   "distance": {
+        #       "script": "doc['location'].distanceInKm(#{lat}, #{lng})"
+        #   }
+        # },
         "query": {
           "function_score": {
             "functions": [

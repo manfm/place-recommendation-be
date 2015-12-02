@@ -7,7 +7,13 @@ class RecommendController < ApplicationController
     # generate 20-30 rnadom points close to (lat,lng)
     GenerateRandomPoints.call(20 + rand(10), lat, lng)
 
-    # return {size} point with the highest score
-    render json: Place.search_close_to(lat, lng, size)
+    # return {size} points with the highest score
+    transaformed_result = Place.search_close_to(lat, lng, size).map do |place|
+      result = place['_source']
+      result['distance'] = place['sort'][1]
+      result['score'] = place['_score']
+      result
+    end
+    render json: transaformed_result
   end
 end
